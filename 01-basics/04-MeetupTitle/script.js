@@ -15,6 +15,8 @@ function fetchMeetupById(meetupId) {
 }
 
 const MeetupTitle = defineComponent({
+  name: 'MeetupTitle',
+
   data() {
     return {
       currentId: 1,
