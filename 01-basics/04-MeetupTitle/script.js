@@ -21,7 +21,6 @@ const MeetupTitle = defineComponent({
     return {
       currentId: 1,
       meetupTitle: '',
-      meetups: [1, 2, 3, 4, 5],
     };
   },
 
