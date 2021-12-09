@@ -1,32 +1,38 @@
 <template>
   <div class="toasts">
-    <ui-toast toast-type="success">Toast Example</ui-toast>
-    <ui-toast toast-type="success">Toast Example</ui-toast>
-    <ui-toast toast-type="error">Error Toast Example</ui-toast>
-
-
-<!--    <div class="toast toast_error">-->
-<!--      <ui-icon class="toast__icon" icon="alert-circle" />-->
-<!--      <span>Error Toast Example</span>-->
-<!--    </div>-->
+    <ui-toast v-for="toast in toasts" :key="toast.id" :toast-type="toast.type">{{ toast.message }}</ui-toast>
   </div>
 </template>
 
 <script>
-import UiIcon from './UiIcon';
 import UiToast from './UiToast';
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon, UiToast },
+  components: { UiToast },
+
+  data() {
+    return {
+      toasts: [],
+      toastIndex: 0,
+    };
+  },
 
   methods: {
-    error: function (message) {
-      console.log(message);
+    error(message) {
+      this.createToast('error', message, 2000);
     },
-    success: function (message) {
-      console.log(message);
+    success(message) {
+      this.createToast('success', message, 5000);
+    },
+    createToast(type, message, msTimeToLive = 5000) {
+      const toastId = ++this.toastIndex;
+      this.toasts.push({ id: toastId, type: type, message: message });
+      setTimeout(() => {
+        const removeIndex = this.toasts.findIndex((item) => item.id === toastId);
+        this.toasts.splice(removeIndex, 1);
+      }, msTimeToLive);
     },
   },
 };

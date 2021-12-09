@@ -1,6 +1,6 @@
 <template>
-  <div class="toast" :class="`toast_${toastType}`">
-    <ui-icon class="toast__icon" :icon="`${circleType}-circle`" />
+  <div class="toast" :class="toastClass">
+    <ui-icon class="toast__icon" :icon="toastIcon" />
     <span><slot /></span>
   </div>
 </template>
@@ -8,32 +8,32 @@
 <script>
 import UiIcon from './UiIcon';
 
+const toastOptions = {
+  success: { class: 'toast_success', icon: 'check-circle' },
+  error: { class: 'toast_error', icon: 'alert-circle' },
+};
+
 export default {
   name: 'UiToast',
+
+  toastOptions,
 
   components: { UiIcon },
 
   props: {
     toastType: {
       type: String,
-      validator(value) {
-        return ['success', 'error'].includes(value);
-      },
+      required: true,
+      validator: (item) => Object.keys(toastOptions).includes(item),
     },
   },
 
-  data() {
-    return {
-      iconMap: {
-        success: 'check',
-        error: 'alert',
-      },
-    };
-  },
-
   computed: {
-    circleType() {
-      return this.iconMap[this.toastType];
+    toastClass() {
+      return toastOptions[this.toastType]['class'];
+    },
+    toastIcon() {
+      return toastOptions[this.toastType]['icon'];
     },
   },
 };
