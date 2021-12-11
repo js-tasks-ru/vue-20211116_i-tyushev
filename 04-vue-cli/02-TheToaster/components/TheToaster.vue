@@ -15,24 +15,28 @@ export default {
   data() {
     return {
       toasts: [],
-      toastIndex: 0,
     };
   },
 
   methods: {
     error(message) {
-      this.createToast('error', message, 2000);
+      this.createToast('error', message);
     },
     success(message) {
-      this.createToast('success', message, 5000);
+      this.createToast('success', message);
     },
     createToast(type, message, msTimeToLive = 5000) {
-      const toastId = ++this.toastIndex;
-      this.toasts.push({ id: toastId, type: type, message: message });
-      setTimeout(() => {
-        const removeIndex = this.toasts.findIndex((item) => item.id === toastId);
-        this.toasts.splice(removeIndex, 1);
+      const toast = { type: type, message: message }
+
+      toast.id = setTimeout(() => {
+        const removeIndex = this.toasts.indexOf(toast);
+        this.deleteToast(removeIndex, 1);
       }, msTimeToLive);
+
+      this.toasts.push(toast);
+    },
+    deleteToast(index) {
+      this.toasts.splice(index, 1);
     },
   },
 };
