@@ -19,12 +19,6 @@ export default {
 
   computed: {
     bgImageStyle: function () {
-      return `linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), ${this.getCoverImage()}`;
-    },
-  },
-
-  methods: {
-    getCoverImage() {
       return this.image ? `url(${this.image})` : `var(--default-cover)`;
     },
   },
@@ -35,7 +29,7 @@ export default {
 .meetup-cover {
   background-size: cover;
   background-position: center;
-  background-image: v-bind(bgImageStyle);
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), v-bind(bgImageStyle);
   display: flex;
   flex-direction: column;
   align-items: center;
