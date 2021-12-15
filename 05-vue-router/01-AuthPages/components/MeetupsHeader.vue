@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <meetups-logo />
+    <router-link :to="{ name: 'index' }"><meetups-logo /></router-link>
     <meetups-nav />
   </header>
 </template>
