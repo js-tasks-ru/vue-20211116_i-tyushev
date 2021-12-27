@@ -5,16 +5,8 @@
 </template>
 
 <script>
-const variantClassMap = {
-  primary: 'button_primary',
-  secondary: 'button_secondary',
-  danger: 'button_danger',
-};
-
 export default {
   name: 'UiButton',
-
-  variantClassMap,
 
   props: {
     tag: {
@@ -34,6 +26,11 @@ export default {
 
   computed: {
     buttonClass() {
+      const variantClassMap = {
+        primary: 'button_primary',
+        secondary: 'button_secondary',
+        danger: 'button_danger',
+      };
       return variantClassMap[this.variant];
     },
     elementType() {
