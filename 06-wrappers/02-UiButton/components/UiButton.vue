@@ -1,10 +1,42 @@
 <template>
-  <button class="button button_secondary button_block">BUTTON</button>
+  <component :is="tag" class="button" :type="elementType" :class="[buttonClass, { button_block: block }]">
+    <slot />
+  </component>
 </template>
 
 <script>
 export default {
   name: 'UiButton',
+
+  props: {
+    tag: {
+      type: String,
+      default: 'button',
+    },
+    variant: {
+      type: String,
+      default: 'secondary',
+      validator: (variant) => ['primary', 'secondary', 'danger'].includes(variant),
+    },
+    block: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  computed: {
+    buttonClass() {
+      const variantClassMap = {
+        primary: 'button_primary',
+        secondary: 'button_secondary',
+        danger: 'button_danger',
+      };
+      return variantClassMap[this.variant];
+    },
+    elementType() {
+      return this.tag === 'button' ? 'button' : null;
+    },
+  },
 };
 </script>
 
