@@ -1,8 +1,20 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': state === 'loading' }"
+      :style="background && `--bg-url: url(${background})`"
+      @click="clickHandler"
+    >
+      <span class="image-uploader__text">{{ message }}</span>
+      <input
+        ref="input"
+        v-bind="$attrs"
+        accept="image/*"
+        class="image-uploader__input"
+        type="file"
+        @change="uploadImage"
+      />
     </label>
   </div>
 </template>
@@ -10,6 +22,85 @@
 <script>
 export default {
   name: 'UiImageUploader',
+  inheritAttrs: false,
+  props: {
+    preview: {
+      type: String,
+    },
+    uploader: {
+      type: Function,
+    },
+  },
+  emits: ['select', 'upload', 'remove', 'error'],
+  data() {
+    return {
+      messageMap: {
+        empty: 'Загрузить изображение',
+        loading: 'Загрузка...',
+        uploaded: 'Удалить изображение',
+      },
+      state: this.preview ? 'uploaded' : 'empty',
+      previewImage: null,
+    };
+  },
+  computed: {
+    message() {
+      return this.messageMap[this.state];
+    },
+    background() {
+      return this.previewImage || this.preview;
+    },
+  },
+  methods: {
+    uploadImage(event) {
+      const file = event.target.files[0];
+      this.setLoadingState();
+      this.$emit('select', file);
+
+      if (this.uploader) {
+        this.uploader(file).then(this.successUpload, this.failureUpload);
+      } else {
+        this.setUploadedState();
+        this.previewImage = URL.createObjectURL(file);
+      }
+    },
+    successUpload(result) {
+      this.setUploadedState();
+      this.$emit('upload', result);
+      this.previewImage = result.image;
+    },
+    failureUpload(error) {
+      this.$emit('error', error);
+      this.setEmptyState();
+      this.clearInputValue();
+    },
+    clickHandler(event) {
+      if (this.state !== 'empty') {
+        event.preventDefault();
+      }
+      if (this.state === 'uploaded') {
+        this.remove();
+      }
+    },
+    remove() {
+      this.previewImage = null;
+      this.$emit('remove');
+      this.setEmptyState();
+      this.clearInputValue();
+    },
+    setEmptyState() {
+      this.state = 'empty';
+    },
+    setLoadingState() {
+      this.state = 'loading';
+    },
+    setUploadedState() {
+      this.state = 'uploaded';
+    },
+    clearInputValue() {
+      this.$refs.input.value = null;
+    },
+  },
 };
 </script>
 
